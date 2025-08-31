@@ -1,0 +1,21 @@
+body {
+  font-family: sans-serif;
+  margin: 1rem;
+}
+#controls {
+  margin-bottom: 1rem;
+}
+#items {
+  list-style: none;
+  padding: 0;
+}
+#items li {
+  padding: 4px;
+}
+#items li.dir {
+  font-weight: bold;
+  cursor: pointer;
+}
+#items li.dir:hover {
+  background: #eee;
+}

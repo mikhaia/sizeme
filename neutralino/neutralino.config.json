@@ -1,0 +1,21 @@
+{
+  "applicationId": "sizeme",
+  "defaultMode": "window",
+  "port": 0,
+  "enableInspector": true,
+  "cli": {
+    "binaryVersion": "11.5.0"
+  },
+  "frontend": {
+    "dir": "resources",
+    "index": "index.html"
+  },
+  "modes": {
+    "window": {
+      "title": "SizeMe",
+      "width": 800,
+      "height": 600,
+      "resizable": true
+    }
+  }
+}
