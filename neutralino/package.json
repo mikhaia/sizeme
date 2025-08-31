@@ -1,0 +1,17 @@
+{
+  "name": "neutralino",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "neu run",
+    "build": "neu build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@neutralinojs/neu": "^11.5.0"
+  }
+}
