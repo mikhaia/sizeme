@@ -24,6 +24,9 @@ body.dark {
 
 #items li {
   padding: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 #items li.dir {
@@ -37,4 +40,8 @@ body.light #items li.dir:hover {
 
 body.dark #items li.dir:hover {
   background: #333;
+}
+
+#items li .actions button {
+  margin-left: 4px;
 }

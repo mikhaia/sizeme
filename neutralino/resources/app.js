@@ -50,13 +50,83 @@ function render(items) {
   list.innerHTML = '';
   items.forEach(item => {
     const li = document.createElement('li');
-    li.textContent = `${item.name} (${item.size})`;
+
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = `${item.name} (${item.size})`;
     if (item.isDir) {
       li.classList.add('dir');
-      li.addEventListener('click', () => scan(item.path));
+      nameSpan.addEventListener('click', () => scan(item.path));
     }
+    li.appendChild(nameSpan);
+
+    const actions = document.createElement('span');
+    actions.classList.add('actions');
+
+    const delBtn = document.createElement('button');
+    delBtn.textContent = 'Delete';
+    delBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      deleteItem(item.path);
+    });
+    actions.appendChild(delBtn);
+
+    const renBtn = document.createElement('button');
+    renBtn.textContent = 'Rename';
+    renBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      renameItem(item.path);
+    });
+    actions.appendChild(renBtn);
+
+    const moveBtn = document.createElement('button');
+    moveBtn.textContent = 'Move';
+    moveBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      moveItem(item.path);
+    });
+    actions.appendChild(moveBtn);
+
+    li.appendChild(actions);
     list.appendChild(li);
   });
+}
+
+async function deleteItem(path) {
+  if (confirm('Delete this item?')) {
+    try {
+      await Neutralino.os.execCommand(`rm -rf "${path}"`);
+      scan(currentPath);
+    } catch (e) {
+      console.error('delete failed', e);
+    }
+  }
+}
+
+async function renameItem(path) {
+  const parts = path.split('/');
+  const currentName = parts.pop();
+  const dir = parts.join('/');
+  const newName = prompt('Enter new name', currentName);
+  if (newName && newName !== currentName) {
+    try {
+      await Neutralino.os.execCommand(`mv "${path}" "${dir}/${newName}"`);
+      scan(currentPath);
+    } catch (e) {
+      console.error('rename failed', e);
+    }
+  }
+}
+
+async function moveItem(path) {
+  const targetDir = prompt('Move to directory', currentPath);
+  if (targetDir) {
+    try {
+      await Neutralino.os.execCommand(`mv "${path}" "${targetDir}"`);
+      scan(currentPath);
+    } catch (e) {
+      console.error('move failed', e);
+    }
+  }
 }
 
 document.getElementById('up').addEventListener('click', () => {
