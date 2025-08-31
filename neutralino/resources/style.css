@@ -2,20 +2,39 @@ body {
   font-family: sans-serif;
   margin: 1rem;
 }
+
+body.light {
+  background: #fff;
+  color: #000;
+}
+
+body.dark {
+  background: #222;
+  color: #eee;
+}
+
 #controls {
   margin-bottom: 1rem;
 }
+
 #items {
   list-style: none;
   padding: 0;
 }
+
 #items li {
   padding: 4px;
 }
+
 #items li.dir {
   font-weight: bold;
   cursor: pointer;
 }
-#items li.dir:hover {
+
+body.light #items li.dir:hover {
   background: #eee;
+}
+
+body.dark #items li.dir:hover {
+  background: #333;
 }
