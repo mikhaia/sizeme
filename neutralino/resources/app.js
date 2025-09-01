@@ -1,5 +1,8 @@
 let currentPath = '..';
 let currentTheme = 'light';
+const progressEl = document.getElementById('progress');
+const progressBar = document.getElementById('progress-bar');
+const progressPercent = document.getElementById('progress-percent');
 
 async function loadSession() {
   try {
@@ -34,12 +37,51 @@ async function saveSession() {
 async function scan(path) {
   try {
     const cmd = `go run ../main.go -dir "${path}" -json`;
-    const result = await Neutralino.os.execCommand(cmd);
-    const items = JSON.parse(result.stdOut);
-    currentPath = path;
-    document.getElementById('cwd').textContent = path;
-    render(items);
-    await saveSession();
+    const proc = await Neutralino.os.spawnProcess(cmd);
+    progressEl.classList.remove('hidden');
+    progressBar.value = 0;
+    progressPercent.textContent = '0%';
+
+    let stdout = '';
+    let stderrBuf = '';
+    const handler = async evt => {
+      if (evt.detail.id !== proc.id) return;
+      switch (evt.detail.action) {
+        case 'stdOut':
+          stdout += evt.detail.data;
+          break;
+        case 'stdErr':
+          stderrBuf += evt.detail.data;
+          const lines = stderrBuf.split('\n');
+          stderrBuf = lines.pop();
+          lines.forEach(line => {
+            const m = line.match(/PROGRESS (\d+) (\d+)/);
+            if (m) {
+              const current = parseInt(m[1], 10);
+              const total = parseInt(m[2], 10);
+              const percent = Math.round((current / total) * 100);
+              progressBar.value = percent;
+              progressPercent.textContent = `${percent}%`;
+            }
+          });
+          break;
+        case 'exit':
+          Neutralino.events.off('spawnedProcess', handler);
+          progressEl.classList.add('hidden');
+          try {
+            const items = JSON.parse(stdout);
+            currentPath = path;
+            document.getElementById('cwd').textContent = path;
+            render(items);
+            await saveSession();
+          } catch (e) {
+            console.error('parse failed', e);
+          }
+          break;
+      }
+    };
+
+    Neutralino.events.on('spawnedProcess', handler);
   } catch (e) {
     console.error(e);
   }
