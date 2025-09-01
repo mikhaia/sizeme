@@ -17,6 +17,18 @@ body.dark {
   margin-bottom: 1rem;
 }
 
+#progress {
+  margin-bottom: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+#progress-bar {
+  width: 100%;
+}
+
 #items {
   list-style: none;
   padding: 0;
